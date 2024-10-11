@@ -28,7 +28,18 @@ jobs:
       # - name: Run AFL++ Setup
       #   run: |
       #     cd duckdb_aflplusplus
+      - name: Checkout Duckdb AFL++
+        uses: actions/checkout@v4
+        with:
+          repository: duckdblabs/duckdb_aflplusplus
+          ref: 'main'
+          token: ${{ secrets.AFL }}
 
+      - name: Verify directory structure
+        run: |
+          ls -la
+          ls -la src
+          ls -la scripts
       - name: Set up Docker environment
         run: |
           docker --version
