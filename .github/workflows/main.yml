@@ -9,11 +9,11 @@ jobs:
       image: aflplusplus/aflplusplus
       options: --cpus 1
     steps:
-      - name: Install
-        shell: bash
-        run: apt-get update -y -qq && apt-get install -y -qq g++ ninja-build cmake make python-is-python3 libssl-dev pip gh python3-requests curl zip unzip tar pkg-config
-      - uses: docker-practice/actions-setup-docker@master
-        timeout-minutes: 12
+      # - name: Install
+      #   shell: bash
+      #   run: apt-get update -y -qq && apt-get install -y -qq g++ ninja-build cmake make python-is-python3 libssl-dev pip gh python3-requests curl zip unzip tar pkg-config
+      # - uses: docker-practice/actions-setup-docker@master
+      #   timeout-minutes: 12
       - name: Checkout Duckdb ALF++
         uses: actions/checkout@v4
         with:
