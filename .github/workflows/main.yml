@@ -7,18 +7,18 @@ jobs:
   container-test-job:
     runs-on: ubuntu-latest
 
-    container:
-      image: aflplusplus/aflplusplus
-      options: --cpus 1
+    # container:
+    #   image: aflplusplus/aflplusplus
+    #   options: --cpus 1
 
     steps:
-      - name: Checkout Duckdb AFL++
-        uses: actions/checkout@v4
-        with:
-          repository: duckdblabs/duckdb_aflplusplus
-          ref: 'main'
-          token: ${{ secrets.AFL }}
-          path: duckdb_aflplusplus
+      # - name: Checkout Duckdb AFL++
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: duckdblabs/duckdb_aflplusplus
+      #     ref: 'main'
+      #     token: ${{ secrets.AFL }}
+      #     path: duckdb_aflplusplus
 
       # - name: Install Dependencies
       #   run: |
@@ -29,14 +29,13 @@ jobs:
       #   run: |
       #     cd duckdb_aflplusplus
 
-      # - name: Set up Docker environment
-      #   run: |
-      #     docker --version
-      #     docker pull aflplusplus/aflplusplus
+      - name: Set up Docker environment
+        run: |
+          docker --version
+          docker pull aflplusplus/aflplusplus
 
       - name: Start AFL++ container
         run: |
-          docker --version
           # Run the container in detached mode, naming it 'afl-container'
           docker run --name afl-container -d aflplusplus/aflplusplus sleep infinity
 
