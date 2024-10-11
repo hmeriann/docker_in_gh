@@ -59,6 +59,9 @@ jobs:
           docker exec afl-container mkdir -p /duckdb_aflplusplus/build
           docker exec afl-container mkdir -p /duckdb_aflplusplus/corpus
           docker exec afl-container mkdir -p /duckdb_aflplusplus/results
+      - run: |
+          make compile-fuzzers
+          make fuzz-csv-file
 
       - name: List running containers
         run: |
