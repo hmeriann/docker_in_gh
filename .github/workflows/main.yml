@@ -68,7 +68,7 @@ jobs:
       #     cmake -DJEMALLOC=1 ..
       #     # make -j4
       - run: |
-          make compile-fuzzers
+          make BUILD_JEMALLOC=1 compile-fuzzers
           make fuzz-csv-file
 
       - name: List running containers
