@@ -59,14 +59,14 @@ jobs:
           docker exec afl-container mkdir -p /duckdb_aflplusplus/build
           docker exec afl-container mkdir -p /duckdb_aflplusplus/corpus
           docker exec afl-container mkdir -p /duckdb_aflplusplus/results
-      - name: Install Jemalloc
-        run: |
-          apt-get update -y && apt-get install -y libjemalloc-dev
+      # - name: Install Jemalloc
+      #   run: |
+      #     apt-get update -y && apt-get install -y libjemalloc-dev
 
-      - name: Configure and Build DuckDB
-        run: |
-          cmake -DJEMALLOC=1 ..
-          # make -j4
+      # - name: Configure and Build DuckDB
+      #   run: |
+      #     cmake -DJEMALLOC=1 ..
+      #     # make -j4
       - run: |
           make compile-fuzzers
           make fuzz-csv-file
