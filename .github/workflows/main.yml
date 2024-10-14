@@ -48,7 +48,7 @@ jobs:
       - name: Start AFL++ container
         run: |
           # Run the container in detached mode, naming it 'afl-container'
-          docker run --name afl-container -d aflplusplus/aflplusplus
+          docker run --name afl-container -d aflplusplus/aflplusplus sleep infinity
 
       - name: Copy directories into container
         run: |
