@@ -67,13 +67,18 @@ jobs:
       #   run: |
       #     cmake -DJEMALLOC=1 ..
       #     # make -j4
-      - run: |
+      - name: compile
+        continue-on-error: true
+        run: |
           docker exec afl-container sed -i '' 's|cd \$(DUCKDB_DIR) \&\& CC=\$(CC) CXX=\$(CXX) GEN=ninja BUILD_JSON=1 CRASH_ON_ASSERT=1 make|cd \$(DUCKDB_DIR) \&\& CC=\$(CC) CXX=\$(CXX) GEN=ninja BUILD_JSON=1 BUILD_JEMALLOC=1 CRASH_ON_ASSERT=1 make|' src/Makefile
           docker exec afl-container cat src/Makefile
           make compile-fuzzers
           make fuzz-csv-file
-
-      - name: List running containers
-        run: |
-          # Check if 'afl-container' is running
-          docker ps
+          
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        with:
+          ## limits ssh access and adds the ssh public key for the user which triggered the workflow
+          limit-access-to-actor: true
+          ## limits ssh access and adds the ssh public keys of the listed GitHub users
+          limit-access-to-users: hmeriann
