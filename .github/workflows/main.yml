@@ -68,6 +68,7 @@ jobs:
       #     cmake -DJEMALLOC=1 ..
       #     # make -j4
       - run: |
+          docker exec -it afl-container bash
           sed -i '' 's|cd \$(DUCKDB_DIR) \&\& CC=\$(CC) CXX=\$(CXX) GEN=ninja BUILD_JSON=1 CRASH_ON_ASSERT=1 make|cd \$(DUCKDB_DIR) \&\& CC=\$(CC) CXX=\$(CXX) GEN=ninja BUILD_JSON=1 BUILD_JEMALLOC=1 CRASH_ON_ASSERT=1 make|' src/Makefile
           make compile-fuzzers
           make fuzz-csv-file
