@@ -72,6 +72,6 @@ jobs:
         run: |
           make compile-fuzzers
           make fuzz-csv-file
-          make afl-down
+          # make afl-down
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
