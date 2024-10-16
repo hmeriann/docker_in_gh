@@ -70,7 +70,7 @@ jobs:
       - name: compile
         continue-on-error: true
         run: |
-          make compile-fuzzers
+          make compile-fuzzers-CI
           make fuzz-csv-file
           # make afl-down
       - name: Setup upterm session
