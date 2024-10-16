@@ -6,47 +6,25 @@ on:
 jobs:
   container-test-job:
     runs-on: ubuntu-latest
-
-    container:
-      image: aflplusplus/aflplusplus
-      options: --cpus 1
-
     steps:
+      - name: Run AFL++ Setup
+        run: |
+          cd duckdb_aflplusplus
       - name: Checkout Duckdb AFL++
         uses: actions/checkout@v4
         with:
           repository: duckdblabs/duckdb_aflplusplus
           ref: 'main'
           token: ${{ secrets.AFL }}
-          path: duckdb_aflplusplus
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v4
-      # - name: Build Docker image
-      #   run: docker build .
-      # - name: Install Dependencies
-      #   run: |
-      #     apt-get update -y -qq
-      #     apt-get install -y -qq g++ cmake make ninja-build libssl-dev
-
-      # - name: Run AFL++ Setup
-      #   run: |
-      #     cd duckdb_aflplusplus
-      # - name: Checkout Duckdb AFL++
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: duckdblabs/duckdb_aflplusplus
-      #     ref: 'main'
-      #     token: ${{ secrets.AFL }}
-
-      # - name: Verify directory structure
-      #   run: |
-      #     ls -la
-      #     ls -la src
-      #     ls -la scripts
-      # - name: Set up Docker environment
-      #   run: |
-      #     docker --version
-      #     docker pull aflplusplus/aflplusplus
+      - name: Verify directory structure
+        run: |
+          ls -la
+          ls -la src
+          ls -la scripts
+      - name: Set up Docker environment
+        run: |
+          docker --version
+          docker pull aflplusplus/aflplusplus
 
       - name: Start AFL++ container
         run: |
@@ -62,14 +40,6 @@ jobs:
           docker exec afl-container mkdir -p /duckdb_aflplusplus/build
           docker exec afl-container mkdir -p /duckdb_aflplusplus/corpus
           docker exec afl-container mkdir -p /duckdb_aflplusplus/results
-      # - name: Install Jemalloc
-      #   run: |
-      #     apt-get update -y && apt-get install -y libjemalloc-dev
-
-      # - name: Configure and Build DuckDB
-      #   run: |
-      #     cmake -DJEMALLOC=1 ..
-      #     # make -j4
       - name: compile
         continue-on-error: true
         run: |
