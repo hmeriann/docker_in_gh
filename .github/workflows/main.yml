@@ -6,10 +6,10 @@ on:
 jobs:
   container-test-job:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file_type: [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
     steps:
-      - name: Run AFL++ Setup
-        run: |
-          cd duckdb_aflplusplus
       - name: Checkout Duckdb AFL++
         uses: actions/checkout@v4
         with:
@@ -48,21 +48,21 @@ jobs:
         continue-on-error: true
         run: |
           make compile-fuzzers-CI
-          for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
-          do 
-            make fuzz-$(file_type)-file
+          # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
+          # do 
+          make fuzz-${{ matrix.file_type }}-file
           done
           # make afl-down
       - name: check
         run: |
-          for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
-          do 
-            count=$(ls fuzz_results/csv_file_fuzzer/default/crashes | wc -l)
+          # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
+          # do 
+            count=$(ls fuzz_results/${{ matrix.file_type }}_file_fuzzer/default/crashes | wc -l)
             if [ $count -eq 0 ]; then
               echo EMPTY
             else
               echo CRASHES 📌📌📌
             fi
-          done
+          # done
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
