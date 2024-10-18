@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        file_type: [ 'json' ]
+        file_type: [ 'wal' ]
         # file_type: [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
     steps:
       - name: Checkout Duckdb AFL++
@@ -18,7 +18,7 @@ jobs:
           ref: 'main'
           token: ${{ secrets.AFL }}
           
-      # - run: sed -i 's/3600/30/g' Makefile
+      # - run: sed -i 's/3600/6000/g' Makefile
       
       # - name: Verify directory structure
       #   run: |
