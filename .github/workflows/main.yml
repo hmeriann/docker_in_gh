@@ -6,6 +6,9 @@ on:
 jobs:
   container-test-job:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file_type: [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
     steps:
       - name: Run AFL++ Setup
         run: |
@@ -16,11 +19,14 @@ jobs:
           repository: duckdblabs/duckdb_aflplusplus
           ref: 'main'
           token: ${{ secrets.AFL }}
-      - name: Verify directory structure
-        run: |
-          ls -la
-          ls -la src
-          ls -la scripts
+          
+      - run: sed -i 's/3600/30/g' Makefile
+      
+      # - name: Verify directory structure
+      #   run: |
+      #     ls -la
+      #     ls -la src
+      #     ls -la scripts
       - name: Set up Docker environment
         run: |
           docker --version
@@ -44,7 +50,15 @@ jobs:
         continue-on-error: true
         run: |
           make compile-fuzzers-CI
-          make fuzz-csv-file
+          make fuzz-${{ matrix.file_type }}-file
           # make afl-down
+      - name: check
+        run: |
+          count=$(ls fuzz_results/csv_file_fuzzer/default/crashes | wc -l)
+          if [ $count -eq 0 ]; then
+            echo EMPTY
+          else
+            echo CRASHES 📌📌📌
+          fi
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
