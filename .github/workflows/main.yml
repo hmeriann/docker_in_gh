@@ -50,7 +50,7 @@ jobs:
           make compile-fuzzers-CI
           for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
           do 
-            make fuzz-${{ matrix.file_type }}-file
+            make fuzz-$(file_type)-file
           done
           # make afl-down
       - name: check
