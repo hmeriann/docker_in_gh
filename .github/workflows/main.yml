@@ -48,7 +48,10 @@ jobs:
         continue-on-error: true
         run: |
           make compile-fuzzers-CI
-          make fuzz-${{ matrix.file_type }}-file
+          for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
+          do 
+            make fuzz-${{ matrix.file_type }}-file
+          done
           # make afl-down
       - name: check
         run: |
