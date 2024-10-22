@@ -45,6 +45,15 @@ jobs:
           docker exec afl-container mkdir -p /duckdb_aflplusplus/build
           docker exec afl-container mkdir -p /duckdb_aflplusplus/corpus
           docker exec afl-container mkdir -p /duckdb_aflplusplus/results
+      - name: Install DuckDB in the container
+        run: |
+          # Install dependencies (like wget) and DuckDB inside the container
+          docker exec afl-container apt-get update
+          docker exec afl-container apt-get install -y wget unzip
+          docker exec afl-container wget https://github.com/duckdb/duckdb/releases/download/v0.9.1/duckdb_cli-linux-amd64.zip
+          docker exec afl-container unzip duckdb_cli-linux-amd64.zip
+          docker exec afl-container mv duckdb /usr/local/bin/duckdb
+          docker exec afl-container duckdb --version
       - name: compile
         continue-on-error: true
         run: |
