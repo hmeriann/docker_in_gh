@@ -58,11 +58,26 @@ jobs:
         continue-on-error: true
         run: |
           make compile-fuzzers-CI
+          afl-container:duckdb -init scripts/duckdb_corpus_init/db0.sql corpus/duckdbfiles/db0.duckdb;
           # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
           # do 
           # make fuzz-${{ matrix.file_type }}-file
           # done
           # make afl-down
+      # - name: get duckdb
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: duckdb/duckdb
+      #     ref: 'main'
+      #     path: duckdb
+      # - name: build duckdb
+      #   run: |
+      #     cd duckdb
+      #     make
+      # - name: make fuzz
+      #   run: |
+      #     make fuzz-duckdb-file
+          
       - name: check
         continue-on-error: true
         run: |
