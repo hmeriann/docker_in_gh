@@ -21,6 +21,7 @@ jobs:
       # - run: sed -i 's/3600/6000/g' Makefile
       
       # - name: Verify directory structure
+      
       #   run: |
       #     ls -la
       #     ls -la src
@@ -83,7 +84,7 @@ jobs:
               echo EMPTY
             else
               echo CRASHES 📌📌📌
-              # ls fuzz_results/${{ matrix.file_type }}_file_fuzzer/default/crashes > ${{ matrix.file_type }}_crashes.txt
+              ls fuzz_results/${{ matrix.file_type }}_file_fuzzer/default/crashes > ${{ matrix.file_type }}_crashes.txt
             fi
           # done
       # - uses: actions/upload-artifact@v4
