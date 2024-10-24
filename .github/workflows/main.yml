@@ -94,3 +94,5 @@ jobs:
           done
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
+          with: 
+            ssh-public-key: ${{ secrets.UPTERM }}
