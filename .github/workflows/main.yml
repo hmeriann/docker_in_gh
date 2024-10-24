@@ -95,12 +95,10 @@ jobs:
       - name: double check
         continue-on-error: true
         run: |
-          docker cp fuzz_results/${{ matrix.file_type }}_file_fuzzer/default/crashes afl-container:../duckdb/
-          docker exec -it afl-container /bin/bash
-          files=$(ls crashes)
+          files=$(ls crashes | grep id*)
           for file in $files
           do
-            ./../duckdb/build/release/duckdb -c ".open '$(file)'"
+            duckdb -c ".open '$(file)'"
             echo $?
           done
       - name: Setup upterm session
