@@ -2,6 +2,7 @@ name: ci
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   container-test-job:
@@ -59,11 +60,6 @@ jobs:
         continue-on-error: true
         run: |
           make compile-fuzzers-CI
-          # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
-          # do 
-          # make fuzz-${{ matrix.file_type }}-file
-          # done
-          # make afl-down
       # - name: Install DuckDB
       #   run: |
       #     wget https://github.com/duckdb/duckdb/releases/download/v1.1.2/duckdb_cli-linux-amd64.zip
@@ -73,6 +69,9 @@ jobs:
       - name: make fuzz
         run: |
           make fuzz-duckdb-file
+          # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]; do 
+            # make fuzz-${{ matrix.file_type }}-file
+          # done
           
       - name: check
         continue-on-error: true
