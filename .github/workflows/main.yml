@@ -56,8 +56,8 @@ jobs:
           docker exec afl-container mv duckdb /usr/local/bin/duckdb
           docker exec afl-container duckdb --version
       
-      - name: upterm
-        uses: owenthereal/action-upterm@v1
+      # - name: upterm
+      #   uses: owenthereal/action-upterm@v1
       - name: compile
         continue-on-error: true
         run: |
