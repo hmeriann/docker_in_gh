@@ -82,12 +82,14 @@ jobs:
         run: |
           # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
           # do 
-            count=$(ls fuzz_results/$file_type_file_fuzzer/default/crashes | wc -l)
+          $file_type=duckdb
+            # count=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes | wc -l)
+            count=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes | wc -l)
             if [ $count -eq 0 ]; then
               echo EMPTY
             else
               echo CRASHES 📌📌📌
-              ls fuzz_results/$file_type_file_fuzzer/default/crashes > $file_type_crashes.txt
+              ls fuzz_results/${file_type}_file_fuzzer/default/crashes > $file_type_crashes.txt
             fi
           # done
       # - uses: actions/upload-artifact@v4
@@ -99,7 +101,7 @@ jobs:
       - name: double check
         continue-on-error: true
         run: |
-          files=$(ls crashes | grep id*)
+          files=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes | grep id*)
           for file in $files
           do
             duckdb -c ".open '$(file)'"
