@@ -101,6 +101,7 @@ jobs:
       - name: double check
         continue-on-error: true
         run: |
+          file_type=duckdb
           files=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes | grep id*)
           for file in $files
           do
