@@ -58,7 +58,7 @@ jobs:
       
       # - name: upterm
       #   uses: owenthereal/action-upterm@v1
-      - name: compile
+      - name: Compile Fuzzer
         # continue-on-error: true
         run: |
           make compile-fuzzers-CI
@@ -69,15 +69,17 @@ jobs:
           unzip duckdb_cli-linux-amd64.zip
           sudo mv duckdb /usr/local/bin/duckdb
           rm duckdb_cli-linux-amd64.zip
-      - name: make fuzz
+      
+      - name: Fuzz
         run: |
           make fuzz-duckdb-file
           # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
           # do 
-          # make fuzz-$file_type-file
+          # make fuzz-${file_type}-file
           # done
           # make afl-down
-      - name: check
+      
+      - name: Inspect fuzz results
         continue-on-error: true
         run: |
           # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
@@ -86,27 +88,37 @@ jobs:
             # count=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes | wc -l)
             count=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes | wc -l)
             if [ $count -eq 0 ]; then
-              echo EMPTY
+              echo "Fuzz results directory is empty."
+              exut 1
             else
-              echo CRASHES 📌📌📌
-              ls fuzz_results/${file_type}_file_fuzzer/default/crashes > $file_type_crashes.txt
+              echo "CRASHES 📌📌📌"
+              ls fuzz_results/${file_type}_file_fuzzer/default/crashes > ${file_type}_crashes.txt
+              cat ${file_type}_crashes.txt
+              exit 0
             fi
           # done
-      # - uses: actions/upload-artifact@v4
-      #   continue-on-error: true
-      #   with:
-      #     name: ${{ matrix.file_type }}_crashes.txt
-      #     path: ${{ matrix.file_type }}_crashes.txt
+      - uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: ${{ matrix.file_type }}_crashes.txt
+          path: ${{ matrix.file_type }}_crashes.txt
     
-      - name: double check
+      - name: Reproduce crashes
+        if: success()
         continue-on-error: true
         run: |
           file_type=duckdb
-          files=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes | grep id*)
+          files=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes)
           for file in $files
           do
-            duckdb -c ".open '$file'"
-            echo $?
+            if [[ $file != 'README.txt' && $file != 'readme.md' ]]; then
+              Processing file: $file
+              duckdb $file
+              duckdb -c "ATTACH '$file' AS tmp_db (READ_ONLY); use tmp_db; show tables;"
+              ./scripts/fix_duckdb_file.py $file
+              echo $?
+            fi
           done
+          ./scripts/test_duckdb_output.sh
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
