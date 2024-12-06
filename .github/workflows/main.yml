@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: duckdblabs/duckdb_aflplusplus
-          ref: 'csv_fuzz_with_flags'
+          ref: 'ci-csv_fuzz_with_flags'
           token: ${{ secrets.AFL }}
           
       - run: sed -i 's/300/6000/g' Makefile
@@ -72,12 +72,8 @@ jobs:
       
       - name: Fuzz
         run: |
+          # results with /fuzz_results/duckdb_file_fuzzer/default/crashes/ 
           make fuzz-duckdb-file
-          # for file_type in [ 'csv', 'json', 'parquet', 'duckdb', 'wal' ]
-          # do 
-          # make fuzz-${file_type}-file
-          # done
-          # make afl-down
       
       - name: Inspect fuzz results
         continue-on-error: true
