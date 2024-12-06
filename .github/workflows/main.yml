@@ -18,7 +18,7 @@ jobs:
           ref: 'csv_fuzz_with_flags'
           token: ${{ secrets.AFL }}
           
-      - run: sed -i 's/3600/6000/g' Makefile
+      - run: sed -i 's/300/6000/g' Makefile
       
       # - name: Verify directory structure
       
@@ -100,8 +100,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: ${file_type}_crashes
-          path: fuzz_results/${file_type}_file_fuzzer/default/crashes
+          name: duckdb_crashes
+          path: fuzz_results/duckdb_file_fuzzer/default/crashes
           compression-level: 9
     
       - name: Reproduce crashes
@@ -110,17 +110,17 @@ jobs:
         run: |
           file_type=duckdb
           files=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes)
-          for file in $files
-            do
-              if [[ $file != 'README.txt' && $file != 'readme.md' ]]; then
-                echo Processing file: $file
-                duckdb $file
-                echo Attaching file
-                duckdb -c "ATTACH '$file' AS tmp_db (READ_ONLY); use tmp_db; show tables;"
-                ./scripts/fix_duckdb_file.py $file
-                echo $?
-              fi
-            done
-          ./scripts/test_duckdb_output.sh
+          if [[ $file_type == 'duckdb' ]]; then
+            echo "Testing $file_type output..."
+            # the script also collects failing files into a report directory
+            ./scripts/test_duckdb_output.sh
+          fi
+          
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          path: report/*
+          name: FILES
+
       - name: Setup upterm session
         uses: lhotari/action-upterm@v1
