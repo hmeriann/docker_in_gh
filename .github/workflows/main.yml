@@ -100,8 +100,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: ${{ matrix.file_type }}_crashes.txt
-          path: ${{ matrix.file_type }}_crashes.txt
+          name: ${file_type}_crashes
+          path: fuzz_results/${file_type}_file_fuzzer/default/crashes
+          compression-level: 9
     
       - name: Reproduce crashes
         if: success()
@@ -114,6 +115,7 @@ jobs:
               if [[ $file != 'README.txt' && $file != 'readme.md' ]]; then
                 echo Processing file: $file
                 duckdb $file
+                echo Attaching file
                 duckdb -c "ATTACH '$file' AS tmp_db (READ_ONLY); use tmp_db; show tables;"
                 ./scripts/fix_duckdb_file.py $file
                 echo $?
