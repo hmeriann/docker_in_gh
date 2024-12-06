@@ -97,7 +97,7 @@ jobs:
         continue-on-error: true
         with:
           name: duckdb_crashes
-          path: fuzz_results/duckdb_file_fuzzer/default/crashes
+          path: fuzz_results/duckdb_file_fuzzer/default/crashes/*
           compression-level: 9
     
       - name: Reproduce crashes
@@ -106,7 +106,7 @@ jobs:
         run: |
           cd scripts
           ./scripts/test_duckdb_output.sh
-          
+
           # file_type=duckdb
           # files=$(ls fuzz_results/${file_type}_file_fuzzer/default/crashes)
           # if [[ $file_type == 'duckdb' ]]; then
